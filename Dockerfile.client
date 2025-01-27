@@ -5,6 +5,7 @@ WORKDIR /app
 COPY src/client.py .
 COPY requirements.txt .
 
-RUN pip install -r requirements.txt
+# Install only required packages for client (no torch needed)
+RUN pip install --no-cache-dir flask requests
 
 ENTRYPOINT ["python", "client.py"] 

@@ -6,7 +6,8 @@ COPY src/server.py .
 COPY model.pt .
 COPY requirements.txt .
 
-RUN pip install -r requirements.txt
+# Install dependencies without CUDA
+RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 5000
 
