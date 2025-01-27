@@ -1,6 +1,0 @@
-flask==2.0.1
-werkzeug==2.0.1
---extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.1.0+cpu
-requests==2.31.0
-numpy>=1.21.0 
