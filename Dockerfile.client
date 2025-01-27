@@ -2,10 +2,14 @@ FROM python:3.8-slim
 
 WORKDIR /app
 
-COPY src/client.py .
 COPY requirements.txt .
 
-# Install only required packages for client (no torch needed)
-RUN pip install --no-cache-dir flask requests
+# Install only required packages for client
+RUN pip install --no-cache-dir \
+    flask==2.0.1 \
+    werkzeug==2.0.1 \
+    requests==2.31.0
+
+COPY src/client.py .
 
 ENTRYPOINT ["python", "client.py"] 
