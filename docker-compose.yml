@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    ports:
+      - "5000:5000"
+    networks:
+      - model-network
+    volumes:
+      - ./model.pt:/app/model.pt
+      - ./src:/app/src
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    networks:
+      - model-network
+    stdin_open: true  # Keep STDIN open
+    tty: true        # Allocate a pseudo-TTY
+    environment:
+      - PYTHONUNBUFFERED=1  # Ensure Python output is unbuffered
+
+networks:
+  model-network:
+    driver: bridge 

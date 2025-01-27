@@ -1,0 +1,22 @@
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# Install required packages
+RUN pip install numpy
+RUN pip install torch --index-url https://download.pytorch.org/whl/cpu
+RUN pip install flask requests
+
+# Copy the entire src directory
+COPY src/ /app/src/
+
+# Copy the model and server script
+COPY model.pt /app/model.pt
+COPY server.py /app/
+
+# Add current directory to PYTHONPATH
+ENV PYTHONPATH="${PYTHONPATH}:/app"
+
+EXPOSE 5000
+
+CMD ["python", "server.py"] 
