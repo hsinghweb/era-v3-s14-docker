@@ -1,34 +1,38 @@
 import requests
-import os
-import time
+import logging
+import sys
 
-def main():
-    server_url = os.environ.get('SERVER_URL', 'http://model-server:5000')
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='[CLIENT] %(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+def generate_text(text, server_url="http://server:5000/generate"):
+    logger.info(f"Sending request to server with input: {text}")
     
-    while True:
-        try:
-            # Get input from user
-            input_text = input("Enter text to generate (or 'quit' to exit): ")
-            
-            if input_text.lower() == 'quit':
-                break
-            
-            # Send request to model server
-            response = requests.post(
-                f"{server_url}/generate",
-                json={'text': input_text}
-            )
-            
-            # Display the response
-            if response.status_code == 200:
-                result = response.json()
-                print("Generated text:", result['generated_text'])
-            else:
-                print("Error:", response.status_code)
-                
-        except Exception as e:
-            print(f"Error: {e}")
-            time.sleep(1)  # Wait before retrying
+    try:
+        response = requests.post(
+            server_url,
+            json={'text': text}
+        )
+        response.raise_for_status()
+        
+        result = response.json()
+        logger.info(f"Received response from server: {result['response']}")
+        return result['response']
+        
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error communicating with server: {e}")
+        return None
 
-if __name__ == '__main__':
-    main() 
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        input_text = " ".join(sys.argv[1:])
+    else:
+        input_text = "Default input text"
+    
+    generated_text = generate_text(input_text)
+    if generated_text:
+        print("\nGenerated Text:", generated_text) 

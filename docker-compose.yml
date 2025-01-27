@@ -1,32 +1,25 @@
-version: '3.8'
+version: '3'
 
 services:
-  model-server:
+  server:
     build:
       context: .
-      dockerfile: src/Dockerfile.server
-    image: docker1
+      dockerfile: Dockerfile.server
     ports:
       - "5000:5000"
     networks:
-      - model-network
-    volumes:
-      - ./model.pt:/app/models/model.pt
-    environment:
-      - MODEL_PATH=/app/models/model.pt
+      - ai-network
 
   client:
     build:
       context: .
-      dockerfile: src/Dockerfile.client
-    image: docker2
+      dockerfile: Dockerfile.client
     depends_on:
-      - model-server
+      - server
     networks:
-      - model-network
-    environment:
-      - SERVER_URL=http://model-server:5000
+      - ai-network
+    command: ["Hello, please generate some text for me!"]
 
 networks:
-  model-network:
+  ai-network:
     driver: bridge 
