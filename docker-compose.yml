@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  model-server:
+    build:
+      context: .
+      dockerfile: src/Dockerfile.server
+    image: docker1
+    ports:
+      - "5000:5000"
+    networks:
+      - model-network
+    volumes:
+      - ./model.pt:/app/models/model.pt
+    environment:
+      - MODEL_PATH=/app/models/model.pt
+
+  client:
+    build:
+      context: .
+      dockerfile: src/Dockerfile.client
+    image: docker2
+    depends_on:
+      - model-server
+    networks:
+      - model-network
+    environment:
+      - SERVER_URL=http://model-server:5000
+
+networks:
+  model-network:
+    driver: bridge 

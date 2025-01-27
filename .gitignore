@@ -169,3 +169,10 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# IDE
+.idea/
+.vscode/
+
+# If you want to exclude the model file when not using Git LFS
+# *.pt
